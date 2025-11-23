@@ -19,7 +19,7 @@ int main()
     graph.addBidirectionalEdge(0,0,1,0);
     graph.addBidirectionalEdge(0,0,0,1);
 
-    MCSimulation sim(graph, 10, 100);
+    MCSimulation sim(graph, 10000, 3, 5);
 
     sim.run();
 

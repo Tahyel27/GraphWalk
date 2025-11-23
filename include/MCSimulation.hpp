@@ -22,7 +22,7 @@ public:
 
     void run();
 
-    data_t getData();
+    Nodes getData();
 
 private:
 

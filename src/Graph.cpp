@@ -70,6 +70,11 @@ GraphData Graph::getGraphData()
     return data;
 }
 
+GraphData Graph::getGraphData() const
+{
+    return data;
+}
+
 Graph::~Graph()
 {
 }

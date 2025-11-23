@@ -34,6 +34,7 @@ public:
 
     const GraphData & getGraphDataConst();
     GraphData getGraphData();
+    GraphData getGraphData() const;
 
     ~Graph();
 };

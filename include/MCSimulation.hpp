@@ -40,13 +40,6 @@ private:
     inline void step(int i);
 };
 
-inline void MCSimulation::initAtZero()
-{
-    std::fill(data.i.begin(),data.i.end(), 0);
-    std::fill(data.x.begin(),data.x.end(), 0);
-    std::fill(data.y.begin(), data.y.end(), 0);
-}
-
 inline void MCSimulation::step(int i)
 {
     // update for a single run

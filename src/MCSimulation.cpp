@@ -15,6 +15,13 @@ MCSimulation::MCSimulation(const Graph &graph_, int runs, long long steps, unsig
     initAtZero();
 }
 
+void MCSimulation::initAtZero()
+{
+    std::fill(data.i.begin(), data.i.end(), 0);
+    std::fill(data.x.begin(), data.x.end(), 0);
+    std::fill(data.y.begin(), data.y.end(), 0);
+}
+
 void MCSimulation::run()
 {
     //iterate over multiple runs

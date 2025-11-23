@@ -19,7 +19,7 @@ void MCSimulation::run()
     for (size_t i = 0; i < totalRuns; i++)
     {
         //perform a run
-        for (size_t i = 0; i < totalSteps; i++)
+        for (size_t j = 0; j < totalSteps; j++)
         {
             step(i);
         }

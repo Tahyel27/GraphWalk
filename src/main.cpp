@@ -15,6 +15,10 @@ void printNodes(const MCSimulation::Nodes &data)
 int main()
 {
     Graph graph;
+    graph.addNode();
+    graph.addBidirectionalEdge(0,0,1,0);
+    graph.addBidirectionalEdge(0,0,0,1);
+
     MCSimulation sim(graph, 10, 100);
 
     sim.run();

@@ -18,7 +18,7 @@ public:
     };
 
     MCSimulation(const Graph &graph_, int runs, long long steps);
-    ~MCSimulation();
+    ~MCSimulation(){};
 
     void run();
 

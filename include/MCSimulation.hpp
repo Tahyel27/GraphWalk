@@ -10,6 +10,13 @@ class MCSimulation
 public:
     using data_t = std::vector<long long>;
 
+    struct Nodes
+    {
+        data_t i;
+        data_t x;
+        data_t y;
+    };
+
     MCSimulation(const Graph &graph_, int runs, long long steps);
     ~MCSimulation();
 
@@ -18,12 +25,6 @@ public:
     data_t getData();
 
 private:
-    struct Nodes
-    {
-        data_t i;
-        data_t x;
-        data_t y;
-    };
 
     Nodes data;
     

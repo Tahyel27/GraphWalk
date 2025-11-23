@@ -17,7 +17,7 @@ public:
         data_t y;
     };
 
-    MCSimulation(const Graph &graph_, int runs, long long steps);
+    MCSimulation(const Graph &graph_, int runs, long long steps, unsigned long seed);
     ~MCSimulation(){};
 
     void run();

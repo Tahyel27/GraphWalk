@@ -1,6 +1,6 @@
 #include "MCSimulation.hpp"
 
-MCSimulation::MCSimulation(const Graph &graph_, int runs, long long steps)
+MCSimulation::MCSimulation(const Graph &graph_, int runs, long long steps, unsigned long seed)
 {
     graph = graph_.getGraphData();
 
@@ -9,6 +9,8 @@ MCSimulation::MCSimulation(const Graph &graph_, int runs, long long steps)
     data.i.resize(runs);
     data.x.resize(runs);
     data.y.resize(runs);
+
+    generator = XoshiroCpp::Xoroshiro128PlusPlus(seed);
 
     initAtZero();
 }

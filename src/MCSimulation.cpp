@@ -21,7 +21,7 @@ void MCSimulation::run()
     }    
 }
 
-MCSimulation::data_t MCSimulation::getData()
+MCSimulation::Nodes MCSimulation::getData()
 {
-    return data.i;
+    return data;
 }

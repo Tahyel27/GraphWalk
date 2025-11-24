@@ -24,7 +24,7 @@ public:
         long long y;
     };
 
-    std::vector<Position> getStep(long long step);
+    std::vector<Position> getStep(long long step) const;
 private:
     std::vector<long long> id;
     std::vector<long long> X;

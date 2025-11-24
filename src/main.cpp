@@ -13,6 +13,15 @@ void printNodes(const MCSimulation::Nodes &data)
     }
 }
 
+void printStep(const SimulationData &data, long long step)
+{
+    auto stepData = data.getStep(step);
+    for (size_t i = 0; i < stepData.size(); i++)
+    {
+        std::cout << std::format("{:5} {:5}", stepData[i].x, stepData[i].y) << std::endl;
+    }
+}
+
 int main()
 {
     Graph graph;
@@ -29,8 +38,11 @@ int main()
     sim.run();
 
     auto res = sim.getData();
+    auto data = sim.getDataPointer();
 
-    printNodes(res);
+    printStep(*data, 4);
+
+    //printNodes(res);
 
     return 0;
 }

@@ -72,7 +72,7 @@ void SimulationData::storeId(const std::vector<long long> &id_, const std::vecto
     stepsStored++;
 }
 
-std::vector<SimulationData::Position> SimulationData::getStep(long long step)
+std::vector<SimulationData::Position> SimulationData::getStep(long long step) const
 {
     auto toRet = std::vector<Position>(runsStored);
     for (size_t i = 0; i < runsStored; i++)

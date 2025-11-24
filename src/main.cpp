@@ -4,6 +4,7 @@
 
 #include "Graph.hpp"
 #include "MCSimulation.hpp"
+#include "PostProcessor.hpp"
 
 void printNodes(const MCSimulation::Nodes &data)
 {
@@ -22,12 +23,32 @@ void printStep(const SimulationData &data, long long step)
     }
 }
 
+void printRn(const PostProcessor &proc)
+{
+    auto rn = proc.getR_n();
+    int i = 0;
+    for (auto &v: rn)
+    {
+        std::cout << std::format("{:5}: {:5}\n", i, v);
+        i++;
+    }
+}
+
 int main()
 {
     Graph graph;
     graph.addNode();
     graph.addBidirectionalEdge(0,0,1,0);
     graph.addBidirectionalEdge(0,0,0,1);
+
+    GraphCoordinates coords;
+    coords.N = 1;
+    coords.scaleX = 1;
+    coords.scaleY = 1;
+    coords.skewX = 0;
+    coords.skewY = 0;
+    coords.X = {0};
+    coords.Y = {0};
 
     std::random_device seedgen;
 
@@ -40,8 +61,12 @@ int main()
     auto res = sim.getData();
     auto data = sim.getDataPointer();
 
-    printStep(*data, 4);
+    auto post = PostProcessor(sim);
+    post.setRepresentation(coords);
 
+    //printStep(*data, 4);
+
+    printRn(post);
     //printNodes(res);
 
     return 0;

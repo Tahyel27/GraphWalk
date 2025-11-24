@@ -49,6 +49,8 @@ public:
     MCSimulation(const Graph &graph_, int runs, long long steps, unsigned long seed);
     ~MCSimulation(){};
 
+    void setDataStore(std::unique_ptr<SimulationData> dataPtr);
+
     void run();
 
     Nodes getData();

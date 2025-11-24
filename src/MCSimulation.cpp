@@ -22,6 +22,12 @@ void MCSimulation::initAtZero()
     std::fill(data.y.begin(), data.y.end(), 0);
 }
 
+void MCSimulation::setDataStore(std::unique_ptr<SimulationData> dataPtr)
+{
+    data_store = std::move(dataPtr);
+    data_store->reserveSpace(totalRuns, totalSteps);
+}
+
 void MCSimulation::run()
 {
     //iterate over steps
@@ -31,6 +37,10 @@ void MCSimulation::run()
         {
             step(j);
         }
+        if (data_store.get() != nullptr)
+        {
+            data_store->storeId(data.i, data.x, data.y);
+        }        
         
     }
     

@@ -26,6 +26,8 @@ public:
         long long y;
     };
 
+    inline Position parallelLoad(long long run, long long step);
+
     std::vector<Position> getStep(long long step) const;
 
     long long getStepCount();
@@ -43,6 +45,11 @@ inline void SimulationData::parallelStore(long long run, long long step, long lo
     id[step * runsStored + run] = i;
     X[step * runsStored + run] = x;
     Y[step * runsStored + run] = y;
+}
+
+inline SimulationData::Position SimulationData::parallelLoad(long long run, long long step)
+{
+    return Position{id[step * runsStored + run], X[step * runsStored + run], Y[step * runsStored + run]};
 }
 
 class MCSimulation

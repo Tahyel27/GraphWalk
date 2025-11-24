@@ -83,3 +83,8 @@ std::vector<SimulationData::Position> SimulationData::getStep(long long step) co
     }
     return toRet;
 }
+
+long long SimulationData::getStepCount()
+{
+    return stepsStored;
+}

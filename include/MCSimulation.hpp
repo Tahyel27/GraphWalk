@@ -25,13 +25,15 @@ public:
     };
 
     std::vector<Position> getStep(long long step) const;
+
+    long long getStepCount();
 private:
     std::vector<long long> id;
     std::vector<long long> X;
     std::vector<long long> Y;
 
-    long long stepsStored;
-    long long runsStored;
+    long long stepsStored = 0;
+    long long runsStored  = 0;
 };
 
 class MCSimulation

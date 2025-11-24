@@ -24,18 +24,47 @@ void MCSimulation::initAtZero()
 
 void MCSimulation::run()
 {
-    //iterate over multiple runs
-    for (size_t i = 0; i < totalRuns; i++)
+    //iterate over steps
+    for (size_t i = 0; i < totalSteps; i++)
     {
-        //perform a run
-        for (size_t j = 0; j < totalSteps; j++)
+        for (size_t j = 0; j < totalRuns; j++)
         {
-            step(i);
+            step(j);
         }
-    }    
+        
+    }
+    
 }
 
 MCSimulation::Nodes MCSimulation::getData()
 {
     return data;
+}
+
+void SimulationData::reserveSpace(long long runs, long long steps)
+{
+    id.resize(runs * steps);
+    X.resize (runs * steps);
+    Y.resize (runs * steps);
+    runsStored = runs;
+}
+
+void SimulationData::storeId(const std::vector<long long> &id_, const std::vector<long long> &x, const std::vector<long long> &y)
+{
+    std::copy(x.begin(),x.end(),X.begin() + stepsStored * runsStored);
+    std::copy(y.begin(),y.end(),Y.begin() + stepsStored * runsStored);
+    std::copy(id_.begin(), id_.end(), id.begin() + stepsStored * runsStored);
+    stepsStored++;
+}
+
+std::vector<SimulationData::Position> SimulationData::getStep(long long step)
+{
+    auto toRet = std::vector<Position>(runsStored);
+    for (size_t i = 0; i < runsStored; i++)
+    {
+        toRet[i].id = id[runsStored * step + i];
+        toRet[i].x = X[runsStored * step + i];
+        toRet[i].y = Y[runsStored * step + i];
+    }
+    return toRet;
 }

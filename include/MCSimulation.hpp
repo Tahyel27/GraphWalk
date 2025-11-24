@@ -4,6 +4,35 @@
 #include "XoshiroCpp.hpp"
 #include <vector>
 #include <random>
+#include <memory>
+
+class SimulationData
+{
+public:
+    explicit SimulationData(){};
+    ~SimulationData(){};
+
+    void reserveSpace(long long runs, long long steps);
+
+    void storeId(const std::vector<long long> &id_, const std::vector<long long> &x, const std::vector<long long> &y);
+
+    //implement copy section for parallel runs later
+    struct Position
+    {
+        long long id;
+        long long x;
+        long long y;
+    };
+
+    std::vector<Position> getStep(long long step);
+private:
+    std::vector<long long> id;
+    std::vector<long long> X;
+    std::vector<long long> Y;
+
+    long long stepsStored;
+    long long runsStored;
+};
 
 class MCSimulation
 {
@@ -25,6 +54,8 @@ public:
     Nodes getData();
 
 private:
+
+    std::unique_ptr<SimulationData> data_store;
 
     Nodes data;
     

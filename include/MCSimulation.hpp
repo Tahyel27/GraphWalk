@@ -16,6 +16,8 @@ public:
 
     void storeId(const std::vector<long long> &id_, const std::vector<long long> &x, const std::vector<long long> &y);
 
+    inline void parallelStore(long long run, long long step, long long i, long long x, long long y);
+
     //implement copy section for parallel runs later
     struct Position
     {
@@ -35,6 +37,13 @@ private:
     long long stepsStored = 0;
     long long runsStored  = 0;
 };
+
+inline void SimulationData::parallelStore(long long run, long long step, long long i, long long x, long long y)
+{
+    id[step * runsStored + run] = i;
+    X[step * runsStored + run] = x;
+    Y[step * runsStored + run] = y;
+}
 
 class MCSimulation
 {

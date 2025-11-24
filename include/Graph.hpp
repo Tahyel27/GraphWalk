@@ -17,6 +17,19 @@ struct GraphData
     std::vector<int> edges_per_node;
 };
 
+struct GraphCoordinates
+{
+    int N;
+
+    std::vector<float> X;
+    std::vector<float> Y;
+    
+    float skewX;
+    float skewY;
+    float scaleX;
+    float scaleY;
+};
+
 class Graph
 {
 private:

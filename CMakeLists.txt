@@ -4,6 +4,8 @@ project(GraphWalk)
 
 set(CMAKE_CXX_STANDARD 20)
 
+find_package(OpenMP REQUIRED)
+
 add_subdirectory(src)
 
 enable_testing()

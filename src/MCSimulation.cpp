@@ -42,6 +42,7 @@ void MCSimulation::run()
         {
             data_store->storeId(data.i, data.x, data.y);
         }
+        #pragma omp parallel for
         for (size_t j = 0; j < totalRuns; j++)
         {
             step(j);

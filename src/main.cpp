@@ -24,6 +24,8 @@ int main()
 
     MCSimulation sim(graph, 1000, 30, seedgen());
 
+    sim.setDataStore(std::make_unique<SimulationData>());
+
     sim.run();
 
     auto res = sim.getData();

@@ -28,6 +28,11 @@ void MCSimulation::setDataStore(std::unique_ptr<SimulationData> dataPtr)
     data_store->reserveSpace(totalRuns, totalSteps);
 }
 
+SimulationData *MCSimulation::getDataPointer()
+{
+    return data_store.get();
+}
+
 void MCSimulation::run()
 {
     //iterate over steps

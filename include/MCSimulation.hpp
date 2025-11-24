@@ -51,6 +51,8 @@ public:
 
     void setDataStore(std::unique_ptr<SimulationData> dataPtr);
 
+    SimulationData * getDataPointer();
+
     void run();
 
     Nodes getData();

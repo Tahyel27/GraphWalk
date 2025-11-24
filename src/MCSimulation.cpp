@@ -38,15 +38,14 @@ void MCSimulation::run()
     //iterate over steps
     for (size_t i = 0; i < totalSteps; i++)
     {
-        for (size_t j = 0; j < totalRuns; j++)
-        {
-            step(j);
-        }
         if (data_store.get() != nullptr)
         {
             data_store->storeId(data.i, data.x, data.y);
+        }
+        for (size_t j = 0; j < totalRuns; j++)
+        {
+            step(j);
         }        
-        
     }
     
 }

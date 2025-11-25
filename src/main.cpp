@@ -1,10 +1,81 @@
 #include <iostream>
 #include <format>
 #include <random>
+#include <fstream>
+#include <string>
+#include <sstream>
+
 
 #include "Graph.hpp"
 #include "MCSimulation.hpp"
 #include "PostProcessor.hpp"
+
+std::tuple<Graph, GraphCoordinates> loadFromFile(const std::string &fname)
+{
+    auto ifs = std::ifstream(fname);
+    if (!ifs.is_open())
+    {
+        std::cerr << "Error opening file: " << fname << std::endl;
+        return {};
+    }
+
+    int n;
+    float posX = 0;
+    float posY = 0;
+    int nodeA = 0;
+    int nodeB = 0;
+    int incX = 0;
+    int incY = 0;
+
+    float scaleX;
+    float scaleY;
+    float skewX;
+    float skewY;
+
+    int nodecounter = -1;
+
+    Graph graph;
+    GraphCoordinates coords;
+
+
+    auto line = std::string();
+    while (std::getline(ifs, line))
+    {
+        auto sstream = std::istringstream(line);
+        if (line[0] == 's')
+        {
+            char dummy;
+            sstream >> dummy >> scaleX >> scaleY >> skewX >> skewY;
+            coords.scaleX = scaleX; coords.scaleY = scaleY;
+            coords.skewX = skewX; coords.skewY = skewY;
+        }
+        else if(line[0] != '#')
+        {
+            if (nodecounter == -1)
+            {
+                sstream >> n;
+                nodecounter = n;
+                coords.N = n;
+            }
+            else if(nodecounter > 0)
+            {
+                sstream >> posX >> posY;
+                graph.addNode();
+                coords.X.push_back(posX);
+                coords.Y.push_back(posY);
+                nodecounter--;
+            }
+            else
+            {
+                sstream >> nodeA >> nodeB >> incX >> incY;
+                graph.addEdge(nodeA,nodeB, incX, incY);
+            }
+            
+        }
+    }
+    return std::tuple<Graph, GraphCoordinates>(graph, coords);
+    
+}
 
 void printNodes(const MCSimulation::Nodes &data)
 {
@@ -47,6 +118,8 @@ void printReturnTime(const PostProcessor &proc)
 
 int main()
 {
+    auto [a, b] = loadFromFile("testgrph.txt");
+    
     Graph graph;
     graph.addNode();
     graph.addBidirectionalEdge(0,0,1,0);

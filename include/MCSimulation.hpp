@@ -18,7 +18,6 @@ public:
 
     inline void parallelStore(long long run, long long step, long long i, long long x, long long y);
 
-    //implement copy section for parallel runs later
     struct Position
     {
         long long id;
@@ -31,6 +30,8 @@ public:
     std::vector<Position> getStep(long long step) const;
 
     long long getStepCount();
+
+    long long getRunCount();
 private:
     std::vector<long long> id;
     std::vector<long long> X;

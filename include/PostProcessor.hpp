@@ -3,6 +3,7 @@
 #include <cmath>
 #include "MCSimulation.hpp"
 #include "Graph.hpp"
+#include "omp.h"
 
 class PostProcessor
 {
@@ -18,6 +19,8 @@ public:
     void setRepresentation(GraphCoordinates rep_);
 
     std::vector<float> getR_n() const;
+
+    std::vector<float> getR_n_parallel() const;
 
     ~PostProcessor(){};
 };

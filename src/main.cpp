@@ -25,7 +25,7 @@ void printStep(const SimulationData &data, long long step)
 
 void printRn(const PostProcessor &proc)
 {
-    auto rn = proc.getR_n();
+    auto rn = proc.getR_n_parallel();
     int i = 0;
     for (auto &v: rn)
     {
@@ -52,7 +52,7 @@ int main()
 
     std::random_device seedgen;
 
-    MCSimulation sim(graph, 1000, 30, seedgen());
+    MCSimulation sim(graph, 1000000, 300, seedgen());
 
     sim.setDataStore(std::make_unique<SimulationData>());
 
@@ -64,7 +64,7 @@ int main()
     auto post = PostProcessor(sim);
     post.setRepresentation(coords);
 
-    //printStep(*data, 4);
+    //printStep(*data, 1);
 
     printRn(post);
     //printNodes(res);

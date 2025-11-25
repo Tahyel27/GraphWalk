@@ -87,5 +87,10 @@ std::vector<SimulationData::Position> SimulationData::getStep(long long step) co
 
 long long SimulationData::getStepCount()
 {
-    return stepsStored;
+    return id.size() / runsStored;
+}
+
+long long SimulationData::getRunCount()
+{
+    return runsStored;
 }

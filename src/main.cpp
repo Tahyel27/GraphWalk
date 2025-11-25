@@ -116,10 +116,19 @@ void printReturnTime(const PostProcessor &proc)
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     auto [a, b] = loadFromFile("testgrph.txt");
     
+    int numRuns = 1000;
+    int numSteps = 1000;
+    if (argc == 2)
+    {
+        numSteps = atoi(argv[0]);
+        numRuns = atoi(argv[1]);
+    }
+    
+
     Graph graph;
     graph.addNode();
     graph.addBidirectionalEdge(0,0,1,0);
@@ -137,7 +146,7 @@ int main()
 
     std::random_device seedgen;
 
-    MCSimulation sim(graph, 100000, 5000, seedgen());
+    MCSimulation sim(graph, numRuns, numSteps, seedgen());
 
     sim.setDataStore(std::make_unique<SimulationData>());
 

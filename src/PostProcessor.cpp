@@ -86,3 +86,38 @@ std::vector<float> PostProcessor::getR_n_parallel() const
 
     return ret;
 }
+
+std::vector<long long> PostProcessor::getReturnedToOrigin() const
+{
+    auto dataptr = sim.getDataPointer();
+    //iterate over runs
+    auto retStep = std::vector<long long> (dataptr->getRunCount());
+    #pragma omp parallel for
+    for (size_t i = 0; i < dataptr->getRunCount(); i++)
+    {
+        for (size_t j = 1; j < dataptr->getStepCount(); j++)
+        {
+            auto step = dataptr->parallelLoad(i, j);
+            if (step.x == 0 && step.y == 0)
+            {
+                retStep[i] = j;
+                break;
+            }
+        }
+    }
+
+    auto ret = std::vector<long long> (dataptr->getStepCount(),0);
+    //pull together data from all the runs
+    for (size_t i = 0; i < retStep.size(); i++)
+    {
+        ret[retStep[i]] += 1;
+    }
+
+    for (size_t i = 2; i < ret.size(); i++)
+    {
+        ret[i] += ret[i-1];
+    }
+    
+
+    return ret;
+}

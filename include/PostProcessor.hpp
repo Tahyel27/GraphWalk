@@ -22,5 +22,7 @@ public:
 
     std::vector<float> getR_n_parallel() const;
 
+    std::vector<long long> getReturnedToOrigin() const;
+
     ~PostProcessor(){};
 };

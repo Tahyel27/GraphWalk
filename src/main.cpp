@@ -34,12 +34,24 @@ void printRn(const PostProcessor &proc)
     }
 }
 
+void printReturnTime(const PostProcessor &proc)
+{
+    auto rt = proc.getReturnedToOrigin();
+    int i = 0;
+    for (auto &v : rt)
+    {
+        std::cout << std::format("{:5}: {:5}\n", i, v);
+        i++;
+    }
+}
+
 int main()
 {
     Graph graph;
     graph.addNode();
     graph.addBidirectionalEdge(0,0,1,0);
     graph.addBidirectionalEdge(0,0,0,1);
+    //graph.addBidirectionalEdge(0,0,0,10);
 
     GraphCoordinates coords;
     coords.N = 1;
@@ -52,7 +64,7 @@ int main()
 
     std::random_device seedgen;
 
-    MCSimulation sim(graph, 1000000, 300, seedgen());
+    MCSimulation sim(graph, 100000, 5000, seedgen());
 
     sim.setDataStore(std::make_unique<SimulationData>());
 
@@ -64,9 +76,10 @@ int main()
     auto post = PostProcessor(sim);
     post.setRepresentation(coords);
 
-    //printStep(*data, 1);
+    //printStep(*data, 10);
+    printReturnTime(post);
 
-    printRn(post);
+    //printRn(post);
     //printNodes(res);
 
     return 0;

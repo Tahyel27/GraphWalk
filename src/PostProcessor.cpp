@@ -53,14 +53,12 @@ std::vector<float> PostProcessor::getR_n_parallel() const
     for (size_t i = 0; i < dataptr->getStepCount(); i++)
     {
         auto length_cumul = std::vector<double>();
-        auto reps = std::vector<GraphCoordinates>();
 
-        #pragma omp parallel
+        #pragma omp parallel firstprivate(representation)
         {
             #pragma omp single
             {
                 length_cumul = std::vector<double>(omp_get_num_threads(),0);
-                reps = std::vector<GraphCoordinates>(omp_get_num_threads(),representation);
             }
 
             #pragma omp for
@@ -68,10 +66,10 @@ std::vector<float> PostProcessor::getR_n_parallel() const
             {
                 int th_num = omp_get_thread_num();
                 auto step = dataptr->parallelLoad(j, i);
-                double x = step.x + reps[th_num].X[step.id];
-                double y = step.y + reps[th_num].Y[step.id];
-                double x_trans = reps[th_num].scaleX * (x + reps[th_num].skewY * y);
-                double y_trans = reps[th_num].scaleY * (y + reps[th_num].skewX * x);
+                double x = step.x + representation.X[step.id];
+                double y = step.y + representation.Y[step.id];
+                double x_trans = representation.scaleX * (x + representation.skewY * y);
+                double y_trans = representation.scaleY * (y + representation.skewX * x);
                 length_cumul[th_num] += getLength(x_trans, y_trans);
             }
         }

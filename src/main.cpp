@@ -9,6 +9,7 @@
 #include "Graph.hpp"
 #include "MCSimulation.hpp"
 #include "PostProcessor.hpp"
+#include "GUI.hpp"
 
 std::tuple<Graph, GraphCoordinates> loadFromFile(const std::string &fname)
 {
@@ -158,6 +159,9 @@ int main(int argc, char *argv[])
         std::tie(graph, coords) = getDefaultSquareGrid();
     }
     
+
+    GUI gui;
+    gui.start();
 
     std::random_device seedgen;
 

@@ -16,3 +16,13 @@ target_include_directories(PostProcessor PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../inc
 target_link_libraries(GraphWalk PUBLIC PostProcessor)
 target_link_libraries(PostProcessor PRIVATE OpenMP::OpenMP_CXX)
 target_compile_options(PostProcessor PRIVATE ${OpenMP_CXX_FLAGS})
+
+add_library(GUI GUI.cpp)
+target_include_directories(GUI PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../include)
+target_link_directories(GUI PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../lib)
+target_link_libraries(GUI PRIVATE raylib gdi32 winmm)
+target_link_libraries(GraphWalk PRIVATE GUI)
+
+file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/../lib/raylib.dll"
+    "${CMAKE_CURRENT_BINARY_DIR}/raylib.dll"
+)

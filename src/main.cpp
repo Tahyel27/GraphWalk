@@ -144,6 +144,7 @@ int main(int argc, char *argv[])
     
     int numRuns = 1000;
     int numSteps = 1000;
+    int writeFreq = 10;
     if (argc == 2)
     {
         numSteps = atoi(argv[0]);
@@ -165,7 +166,7 @@ int main(int argc, char *argv[])
 
     std::random_device seedgen;
 
-    MCSimulation sim(graph, numRuns, numSteps, seedgen());
+    MCSimulation sim(graph, numRuns, numSteps, seedgen(), writeFreq);
 
     sim.setDataStore(std::make_unique<SimulationData>());
 

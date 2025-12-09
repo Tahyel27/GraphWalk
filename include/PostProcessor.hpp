@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cmath>
+#include <fstream>
+#include <format>
+#include <iostream>
 #include "MCSimulation.hpp"
 #include "Graph.hpp"
 #include "omp.h"
@@ -23,6 +26,8 @@ public:
     std::vector<float> getR_n_parallel() const;
 
     std::vector<long long> getReturnedToOrigin() const;
+
+    static void writeResultsToFile(MCSimulation &sim, const GraphCoordinates &coords);
 
     ~PostProcessor(){};
 };

@@ -5,6 +5,9 @@
 #include <vector>
 #include <random>
 #include <memory>
+#include <omp.h>
+#include <fstream>
+#include <string>
 
 class SimulationData
 {
@@ -65,7 +68,7 @@ public:
         data_t y;
     };
 
-    MCSimulation(const Graph &graph_, int runs, long long steps, unsigned long seed);
+    MCSimulation(const Graph &graph_, int runs, long long steps, unsigned long seed, long long writeFreq);
     ~MCSimulation(){};
 
     void setDataStore(std::unique_ptr<SimulationData> dataPtr);
@@ -76,6 +79,12 @@ public:
 
     Nodes getData();
 
+    void setParams(long long runs, long long steps, long long writePeriod_);
+
+    void setStartingPosition(int index, int cellx, int celly);
+
+    long long getWritePeriod();
+
 private:
 
     std::unique_ptr<SimulationData> data_store;
@@ -85,13 +94,17 @@ private:
     GraphData graph;
 
     XoshiroCpp::Xoroshiro128PlusPlus generator;
+    std::array<XoshiroCpp::Xoroshiro128PlusPlus, 36> generators;
 
     long long totalSteps; // number of Monte Carlo steps to take
     long long totalRuns;
+    long long writePeriod = 10;
 
     void initAtZero();
 
     inline void step(int i);
+
+    inline void step(int run, XoshiroCpp::Xoroshiro128PlusPlus &gen);
 };
 
 inline void MCSimulation::step(int i)
@@ -109,3 +122,20 @@ inline void MCSimulation::step(int i)
     data.x[i] += graph.inc_X[edge_start + choice];
     data.y[i] += graph.inc_Y[edge_start + choice];
 }
+
+inline void MCSimulation::step(int run, XoshiroCpp::Xoroshiro128PlusPlus &gen)
+{
+    // update for a single run
+    int n_edges = graph.edges_per_node[data.i[run]]; // get the number of edges for our location on the periodic graph
+    int edge_start = graph.edge_start[data.i[run]];  // get the location of the information about our node in the graph data rep.run
+    std::uniform_int_distribution<> dist(0, n_edges - 1);
+
+    int choice = dist(gen); // pick an edge
+
+    // now update the position based on the graph data, which is at some_data[edge_start + choice]
+    data.i[run] = graph.vert_B[edge_start + choice];
+    data.x[run] += graph.inc_X[edge_start + choice];
+    data.y[run] += graph.inc_Y[edge_start + choice];
+}
+
+void loadSimulationFromConfig(MCSimulation &sim);

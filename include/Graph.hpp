@@ -2,10 +2,11 @@
 
 #include <vector>
 #include <stdexcept>
+#include <tuple>
 
 struct GraphData
 {
-    int N; // number of vertices in the graph
+    int N = 0; // number of vertices in the graph
     // edges are stored a struct of arrays for optimal performance
     std::vector<int> vert_A; // the starting vertex of an edge
     std::vector<int> vert_B; // the terminating vertex of an edge
@@ -19,15 +20,15 @@ struct GraphData
 
 struct GraphCoordinates
 {
-    int N;
+    int N = 0;
 
     std::vector<float> X;
     std::vector<float> Y;
     
-    float skewX;
-    float skewY;
-    float scaleX;
-    float scaleY;
+    float skewX = 0;
+    float skewY = 0;
+    float scaleX = 1;
+    float scaleY = 1;
 };
 
 class Graph
@@ -51,3 +52,5 @@ public:
 
     ~Graph();
 };
+
+std::tuple<Graph, GraphCoordinates> getHexGrid();

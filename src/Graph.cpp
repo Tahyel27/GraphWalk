@@ -78,3 +78,18 @@ GraphData Graph::getGraphData() const
 Graph::~Graph()
 {
 }
+
+std::tuple<Graph, GraphCoordinates> getHexGrid()
+{
+    Graph g;
+    g.addNode();
+    g.addNode();
+    g.addBidirectionalEdge(0, 1, 0, 0);
+    g.addBidirectionalEdge(0, 1, -1, -1);
+    g.addBidirectionalEdge(0, 1, 0, 1);
+    GraphCoordinates coords;
+    coords.skewX = -0.3;
+    coords.X = {-0.25,0.25};
+    coords.Y = {0.24, -0.15};
+    return {g, coords};
+}

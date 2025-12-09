@@ -21,7 +21,13 @@ add_library(GUI GUI.cpp)
 target_include_directories(GUI PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../include)
 target_link_directories(GUI PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../lib)
 target_link_libraries(GUI PRIVATE raylib gdi32 winmm)
-target_link_libraries(GraphWalk PRIVATE GUI)
+target_link_libraries(GraphWalk PRIVATE GUI MCSimulation PostProcessor)
+
+add_library(GUI_GraphEditor GUI_GraphEditor.cpp)
+target_include_directories(GUI_GraphEditor PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../include)
+target_link_directories(GUI_GraphEditor PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../lib)
+target_link_libraries(GUI_GraphEditor PRIVATE raylib gdi32 winmm)
+target_link_libraries(GraphWalk PRIVATE GUI_GraphEditor)
 
 file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/../lib/raylib.dll"
     "${CMAKE_CURRENT_BINARY_DIR}/raylib.dll"

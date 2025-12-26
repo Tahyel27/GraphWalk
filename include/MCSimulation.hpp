@@ -12,7 +12,7 @@
 class SimulationData
 {
 public:
-    explicit SimulationData(){};
+    SimulationData(){};
     ~SimulationData(){};
 
     void reserveSpace(long long runs, long long steps);
@@ -138,4 +138,4 @@ inline void MCSimulation::step(int run, XoshiroCpp::Xoroshiro128PlusPlus &gen)
     data.y[run] += graph.inc_Y[edge_start + choice];
 }
 
-void loadSimulationFromConfig(MCSimulation &sim);
+void loadSimulationFromConfigFile(MCSimulation &sim);

@@ -68,7 +68,7 @@ void GUI::runSimulation()
     
     simulation.setDataStore(std::move(simStore));
 
-    loadSimulationFromConfig(simulation);
+    loadSimulationFromConfigFile(simulation);
 
     std::cout << "Starting simulation for " << simulation.getDataPointer()->getRunCount() << " runs " << simulation.getDataPointer()->getStepCount() << " steps..." << std::endl;
 

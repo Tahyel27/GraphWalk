@@ -174,7 +174,7 @@ long long SimulationData::getRunCount()
     return runsStored;
 }
 
-void loadSimulationFromConfig(MCSimulation &sim)
+void loadSimulationFromConfigFile(MCSimulation &sim)
 {
     auto configFile = std::ifstream("config.txt");
 

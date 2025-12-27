@@ -1,0 +1,11 @@
+#first number of nodes
+2
+#first coordinates of nodes (two values)
+0.5 0.5
+0.2 0.1
+#coordinates of edges (four values)
+0 0 1 0
+0 1 -1 0
+1 1 0 1
+#scale and skew start with the letter s
+s 1 1 0 0

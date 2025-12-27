@@ -1,0 +1,3 @@
+runs 50000
+steps 10000
+maxmem 2

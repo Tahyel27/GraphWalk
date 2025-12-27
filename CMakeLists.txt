@@ -10,6 +10,9 @@ find_package(OpenMP REQUIRED)
 
 add_subdirectory(src)
 
+file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/cfg_files/config.txt" "${CMAKE_CURRENT_LIST_DIR}/build/src/config.txt")
+file(COPY_FILE "${CMAKE_CURRENT_LIST_DIR}/cfg_files/testgrph.txt" "${CMAKE_CURRENT_LIST_DIR}/build/src/testgrph.txt")
+
 enable_testing()
 
 add_subdirectory(tests)

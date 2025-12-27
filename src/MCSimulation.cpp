@@ -209,36 +209,3 @@ long long SimulationData::getRunCount()
 {
     return runsStored;
 }
-
-void loadSimulationFromConfigFile(MCSimulation &sim)
-{
-    auto configFile = std::ifstream("config.txt");
-
-    long long runs = 0;
-    long long steps = 0;
-    long long wtperiod = 0;
-
-    std::string line;
-    while (std::getline(configFile, line))
-    {
-        auto name = line.substr(0, line.find(" "));
-        if (name == "runs")
-        {
-            auto num = line.substr(line.find(" ")+1, line.size() - line.find(" "));
-            runs = std::stoll(num);
-        }
-        if (name == "steps")
-        {
-            auto num = line.substr(line.find(" ") + 1, line.size() - line.find(" "));
-            steps = std::stoll(num);
-        }
-        if (name == "writeperiod")
-        {
-            auto num = line.substr(line.find(" ") + 1, line.size() - line.find(" "));
-            wtperiod = std::stoll(num);
-        }
-    }
-
-    sim.setParams(runs, steps);
-    
-}

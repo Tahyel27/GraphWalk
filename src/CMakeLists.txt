@@ -1,6 +1,10 @@
 add_executable(GraphWalk main.cpp)
 target_include_directories(GraphWalk PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
+add_library(Utilities Utilities.cpp)
+target_include_directories(Utilities PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(GraphWalk PUBLIC Utilities)
+
 add_library(GraphEngine Graph.cpp)
 target_include_directories(GraphEngine PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(GraphWalk PUBLIC GraphEngine)
@@ -20,7 +24,7 @@ target_compile_options(PostProcessor PRIVATE ${OpenMP_CXX_FLAGS})
 add_library(GUI GUI.cpp)
 target_include_directories(GUI PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../include)
 target_link_directories(GUI PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../lib)
-target_link_libraries(GUI PRIVATE raylib gdi32 winmm)
+target_link_libraries(GUI PRIVATE Utilities raylib gdi32 winmm)
 target_link_libraries(GraphWalk PRIVATE GUI MCSimulation PostProcessor)
 
 add_library(GUI_GraphEditor GUI_GraphEditor.cpp)

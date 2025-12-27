@@ -59,12 +59,11 @@ void GUI::runSimulation()
     auto [index, cellx, celly] = editor.getStartingNode();
 
     std::random_device seedgen;
+    auto cfg = parseConfigFile();
 
-    auto simulation = MCSimulation(graph, coords, 100, 100, seedgen());
+    auto simulation = MCSimulation(graph, coords, cfg, seedgen());
 
     simulation.setStartingPosition(index, cellx, celly);
-
-    loadSimulationFromConfigFile(simulation);
 
     std::cout << "Starting simulation for " << simulation.getRunCount() << " runs " << simulation.getStepCount() << " steps..." << std::endl;
 

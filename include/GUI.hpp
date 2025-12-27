@@ -6,6 +6,7 @@
 #include "GUI_Interface.hpp"
 #include "MCSimulation.hpp"
 #include "PostProcessor.hpp"
+#include "Utilities.hpp"
 
 #include <iostream>
 #include <queue>

@@ -9,6 +9,14 @@
 #include <fstream>
 #include <string>
 
+struct SimulationConfig
+{
+    size_t max_memory = 4ULL * 1024ULL * 1024ULL * 1024ULL; // 4GiB
+    size_t runs = 10000;
+    size_t steps = 1000;
+    std::string filename = "";
+};
+
 struct SimulationResults
 {
     std::vector<int> returns;
@@ -94,6 +102,12 @@ public:
             generators[0] = XoshiroCpp::Xoroshiro128PlusPlus(seed);
     };
 
+    MCSimulation(const Graph &g, const GraphCoordinates &co, const SimulationConfig &config, unsigned long long seed) : 
+        graph(g.getGraphData()), coordinates(co), totalRuns(config.runs), totalSteps(config.steps), max_memory(config.max_memory) {
+            generators[0] = XoshiroCpp::Xoroshiro128PlusPlus(seed);
+            data.i.resize(totalRuns); data.x.resize(totalRuns); data.y.resize(totalRuns);
+    };
+
     ~MCSimulation(){};
 
     void run();
@@ -155,5 +169,3 @@ inline void MCSimulation::step(int run, XoshiroCpp::Xoroshiro128PlusPlus &gen)
     data.x[run] += graph.inc_X[edge_start + choice];
     data.y[run] += graph.inc_Y[edge_start + choice];
 }
-
-void loadSimulationFromConfigFile(MCSimulation &sim);

@@ -35,7 +35,7 @@ if(GUI)
         target_link_libraries(GUI PRIVATE Utilities raylib gdi32 winmm)
     elseif(UNIX AND NOT APPLE)
         target_link_directories(GUI PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../lib/linux)
-        target_link_libraries(GUI PRIVATE raylib GL m pthread dl rt X11)
+        target_link_libraries(GUI PRIVATE Utilities raylib GL m pthread dl rt X11)
     endif()
     target_link_libraries(GraphWalk PRIVATE GUI MCSimulation PostProcessor)
 

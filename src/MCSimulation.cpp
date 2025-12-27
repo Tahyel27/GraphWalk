@@ -95,7 +95,7 @@ void MCSimulation::calculateReturnsForChunk(const size_t startingStep, const siz
         {
             for (size_t step = 0; step < steps; step++)
             {
-                auto state = chunkData.parallelLoad(run, step);
+                const auto state = chunkData.parallelLoad(run, step);
                 if (state.id == sI && state.x == sX && state.y == sY)
                 {
                     returnTimes[run] = startingStep + step;

@@ -39,32 +39,39 @@ void printNodes(const MCSimulation::Nodes &data)
     }
 }
 
-int main(int argc, char *argv[])
+void runCLI()
 {
-    Graph graph;
-    GraphCoordinates coords;
-    
-    int numRuns = 1000;
-    int numSteps = 1000;
-    int writeFreq = 10;
-    if (argc == 2)
+    auto cfg = parseConfigFile();
+
+    std::random_device seedgen;
+
+    std::tuple<Graph, GraphCoordinates> result;
+
+    if (!cfg.filename.empty())
     {
-        numSteps = atoi(argv[0]);
-        numRuns = atoi(argv[1]);
-    }
-    if (argc == 3)
-    {
-        std::string fname = argv[2];
-        std::tie(graph, coords) = loadGraphFromFile(fname);
+        result = loadGraphFromFile(cfg.filename);
     }
     else
     {
-        std::tie(graph, coords) = getDefaultSquareGrid();
+        result = getDefaultSquareGrid();
+        std::cout << "Running simulation on a square grid" << std::endl;
     }
-    
 
+    auto [graph, coords] = result;
+
+    auto sim = MCSimulation(graph, coords, cfg, seedgen());
+
+    sim.run();
+
+    PostProcessor::writeResultsToFile(sim, coords);
+    
+}
+
+int main(int argc, char *argv[])
+{ 
     GUI gui;
-    gui.start();
+    //gui.start();
+    runCLI();
 
     return 0;
 }

@@ -20,7 +20,7 @@ void PostProcessor::writeResultsToFile(MCSimulation &sim, const GraphCoordinates
 
     for (size_t i = 0; i < results.R.size(); i++)
     {
-        distanceFile << std::format("{:6}  {:6.5f}  {:6.5f}  {:6.5f}\n", i, results.R[i], results.X[i], results.Y[i]);
+        distanceFile << std::format("{:6}  {:6.5f}  {:6.5f}  {:6.5f}  {:6.5f}\n", i, results.R[i], results.sigma_R[i], results.X[i], results.Y[i]);
     }
 
     float percent = 100.f * static_cast<float>(results.returns[0]) / static_cast<float>(sim.getRunCount());

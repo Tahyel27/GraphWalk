@@ -82,7 +82,7 @@ void MCSimulation::calculateRnForChunk(const size_t startingStep, const size_t s
         results.R[idx] = R_mean;
         results.X[idx] = X_mean;
         results.Y[idx] = Y_mean;
-        results.sigma_R[idx] = Rstd_cumul;
+        results.sigma_R[idx] = Rstd_cumul / N;
     }
 }
 

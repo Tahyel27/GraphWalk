@@ -9,7 +9,11 @@
 #include "Graph.hpp"
 #include "MCSimulation.hpp"
 #include "PostProcessor.hpp"
-#include "GUI.hpp"
+#include "Utilities.hpp"
+
+#ifdef USE_GUI
+    #include "GUI.hpp"
+#endif
 
 std::tuple<Graph, GraphCoordinates> getDefaultSquareGrid()
 {
@@ -69,9 +73,14 @@ void runCLI()
 
 int main(int argc, char *argv[])
 { 
-    GUI gui;
-    //gui.start();
-    runCLI();
+    #ifdef USE_GUI
+        GUI gui;
+        gui.start();
+    #elif defined(USE_CLI)
+        runCLI();
+    #else
+        #error "Build mode not specified!"
+    #endif
 
     return 0;
 }

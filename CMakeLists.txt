@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
+option(GUI "Use GUI" ON)
+
 project(GraphWalk)
 
 set(CMAKE_CXX_STANDARD 20)

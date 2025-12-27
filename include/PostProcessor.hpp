@@ -21,12 +21,6 @@ public:
 
     void setRepresentation(GraphCoordinates rep_);
 
-    std::vector<float> getR_n() const;
-
-    std::vector<float> getR_n_parallel() const;
-
-    std::vector<long long> getReturnedToOrigin() const;
-
     static void writeResultsToFile(MCSimulation &sim, const GraphCoordinates &coords);
 
     ~PostProcessor(){};

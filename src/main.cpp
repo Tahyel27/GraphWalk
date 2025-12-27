@@ -106,37 +106,6 @@ void printNodes(const MCSimulation::Nodes &data)
     }
 }
 
-void printStep(const SimulationData &data, long long step)
-{
-    auto stepData = data.getStep(step);
-    for (size_t i = 0; i < stepData.size(); i++)
-    {
-        std::cout << std::format("{:5} {:5}", stepData[i].x, stepData[i].y) << std::endl;
-    }
-}
-
-void printRn(const PostProcessor &proc)
-{
-    auto rn = proc.getR_n_parallel();
-    int i = 0;
-    for (auto &v: rn)
-    {
-        std::cout << std::format("{:5}: {:5}\n", i, v);
-        i++;
-    }
-}
-
-void printReturnTime(const PostProcessor &proc)
-{
-    auto rt = proc.getReturnedToOrigin();
-    int i = 0;
-    for (auto &v : rt)
-    {
-        std::cout << std::format("{:5}: {:5}\n", i, v);
-        i++;
-    }
-}
-
 int main(int argc, char *argv[])
 {
     Graph graph;
@@ -163,26 +132,6 @@ int main(int argc, char *argv[])
 
     GUI gui;
     gui.start();
-
-    std::random_device seedgen;
-
-    MCSimulation sim(graph, numRuns, numSteps, seedgen(), writeFreq);
-
-    sim.setDataStore(std::make_unique<SimulationData>());
-
-    sim.run();
-
-    auto res = sim.getData();
-    auto data = sim.getDataPointer();
-
-    auto post = PostProcessor(sim);
-    post.setRepresentation(coords);
-
-    //printStep(*data, 10);
-    printReturnTime(post);
-
-    //printRn(post);
-    //printNodes(res);
 
     return 0;
 }

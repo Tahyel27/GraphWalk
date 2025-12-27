@@ -35,8 +35,6 @@ public:
 
     void reserveSpace(long long runs, long long steps);
 
-    void storeId(const std::vector<long long> &id_, const std::vector<long long> &x, const std::vector<long long> &y);
-
     inline void parallelStore(long long run, long long step, long long i, long long x, long long y);
 
     struct Position
@@ -49,8 +47,6 @@ public:
     inline Position parallelLoad(long long run, long long step);
 
     inline Position parallelLoad(long long run, long long step) const;
-
-    std::vector<Position> getStep(long long step) const;
 
     long long getStepCount();
 
@@ -93,7 +89,6 @@ public:
         data_t y;
     };
 
-    MCSimulation(const Graph &graph_, int runs, long long steps, unsigned long seed, long long writeFreq);
     MCSimulation(const Graph &g, const GraphCoordinates &co, size_t runs, size_t steps, unsigned long long seed) :
         graph(g.getGraphData()), coordinates(co), totalRuns(runs), totalSteps(steps) {
             generators[0] = XoshiroCpp::Xoroshiro128PlusPlus(seed);
@@ -101,44 +96,34 @@ public:
 
     ~MCSimulation(){};
 
-    void setDataStore(std::unique_ptr<SimulationData> dataPtr);
-
-    SimulationData * getDataPointer();
-
     void run();
-
-    void runChunked();
 
     Nodes getData();
 
-    void setParams(long long runs, long long steps, long long writePeriod_);
+    void setParams(long long runs, long long steps);
 
     void setStartingPosition(int index, int cellx, int celly);
 
-    long long getWritePeriod();
-
     long long getRunCount() {return totalRuns;};
+    long long getStepCount() {return totalSteps;};
 
     SimulationResults getResults() const;
 
 private:
-
-    std::unique_ptr<SimulationData> data_store;
+    size_t max_memory = 4ULL * 1024ULL * 1024ULL * 1024ULL; //4GiB
 
     Nodes data;
     
-    GraphData graph;
+    const GraphData graph;
 
-    GraphCoordinates coordinates;
+    const GraphCoordinates coordinates;
 
     SimulationResults results;
 
-    XoshiroCpp::Xoroshiro128PlusPlus generator;
     std::array<XoshiroCpp::Xoroshiro128PlusPlus, 36> generators;
 
     size_t totalSteps; // number of Monte Carlo steps to take
     size_t totalRuns;
-    long long writePeriod = 10;
 
     void initAtZero();
 
@@ -152,26 +137,9 @@ private:
 
     void calculateReturnTimes(const std::vector<size_t> &returnTracker);
 
-    inline void step(int i);
-
     inline void step(int run, XoshiroCpp::Xoroshiro128PlusPlus &gen);
 };
 
-inline void MCSimulation::step(int i)
-{
-    // update for a single run
-    int n_edges = graph.edges_per_node[data.i[i]]; // get the number of edges for our location on the periodic graph
-    int edge_start = graph.edge_start[data.i[i]];  // get the location of the information about our node in the graph data rep.
-
-    std::uniform_int_distribution<> dist(0, n_edges - 1);
-
-    int choice = dist(generator); // pick an edge
-
-    // now update the position based on the graph data, which is at some_data[edge_start + choice]
-    data.i[i] = graph.vert_B[edge_start + choice];
-    data.x[i] += graph.inc_X[edge_start + choice];
-    data.y[i] += graph.inc_Y[edge_start + choice];
-}
 
 inline void MCSimulation::step(int run, XoshiroCpp::Xoroshiro128PlusPlus &gen)
 {

@@ -60,7 +60,8 @@ void GUI::runSimulation()
 
     std::random_device seedgen;
 
-    MCSimulation simulation(graph, 100,100, seedgen(), 10);
+    //MCSimulation simulation(graph, 100,100, seedgen(), 10);
+    auto simulation = MCSimulation(graph, coords, 100, 100, seedgen());
 
     simulation.setStartingPosition(index, cellx, celly);
 
@@ -72,7 +73,8 @@ void GUI::runSimulation()
 
     std::cout << "Starting simulation for " << simulation.getDataPointer()->getRunCount() << " runs " << simulation.getDataPointer()->getStepCount() << " steps..." << std::endl;
 
-    simulation.run();
+    //simulation.run();
+    simulation.runChunked();
 
     std::cout << "Simulation done" << std::endl;
 

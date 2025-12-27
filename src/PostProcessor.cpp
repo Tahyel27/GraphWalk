@@ -54,14 +54,14 @@ std::vector<float> PostProcessor::getR_n_parallel() const
     {
         auto length_cumul = std::vector<double>();
 
-        //#pragma omp parallel firstprivate(representation)
+        #pragma omp parallel firstprivate(representation)
         {
-            //#pragma omp single
+            #pragma omp single
             {
                 length_cumul = std::vector<double>(omp_get_num_threads(),0);
             }
 
-            //#pragma omp for
+            #pragma omp for
             for (size_t j = 0; j < dataptr->getRunCount(); j++)
             {
                 int th_num = omp_get_thread_num();
@@ -124,7 +124,7 @@ std::vector<long long> PostProcessor::getReturnedToOrigin() const
 
 void PostProcessor::writeResultsToFile(MCSimulation &sim, const GraphCoordinates &coords)
 {
-    auto distanceFile = std::ofstream("distance.dat", std::ios::trunc);
+    /*auto distanceFile = std::ofstream("distance.dat", std::ios::trunc);
     auto retFile = std::ofstream("return.dat", std::ios::trunc);
 
     PostProcessor proc(sim);
@@ -153,5 +153,33 @@ void PostProcessor::writeResultsToFile(MCSimulation &sim, const GraphCoordinates
     retFile.close();
 
     std::cout << "Results written to files\n";
-    std::cout << std::format("Did not return to origin: {:10}  ({:3.1f}%)\n", ret[0], percent);
+    std::cout << std::format("Did not return to origin: {:10}  ({:3.1f}%)\n", ret[0], percent);*/
+
+    auto distanceFile = std::ofstream("distance.dat", std::ios::trunc);
+    auto retFile = std::ofstream("return.dat", std::ios::trunc);
+
+    const auto results = sim.getResults();
+  
+
+    auto writePeriod = sim.getWritePeriod();
+
+    for (size_t i = 0; i < results.R.size(); i++)
+    {
+        distanceFile << std::format("{:6}  {:6.5f}  {:6.5f}  {:6.5f}\n", writePeriod * i, results.R[i], results.X[i], results.Y[i]);
+    }
+
+    float percent = 100.f * static_cast<float>(results.returns[0]) / static_cast<float>(sim.getRunCount());
+
+    retFile << std::format("Did not return to origin: {:10}  ({:3.1f}%)\n", results.returns[0], percent);
+    retFile << std::format("{:6} {:6}", "iter", "n_ret\n");
+    for (size_t i = 1; i < results.returns.size(); i++)
+    {
+        retFile << std::format("{:6}  {:6}\n", writePeriod * i, results.returns[i]);
+    }
+
+    distanceFile.close();
+    retFile.close();
+
+    std::cout << "Results written to files\n";
+    std::cout << std::format("Did not return to origin: {:10}  ({:3.1f}%)\n", results.returns[0], percent);
 }

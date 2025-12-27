@@ -9,6 +9,24 @@
 #include <fstream>
 #include <string>
 
+struct SimulationResults
+{
+    std::vector<int> returns;
+    std::vector<float> R;
+    std::vector<float> sigma_R;
+    std::vector<float> X;
+    std::vector<float> Y;
+
+    void resize(const size_t steps)
+    {
+        returns.resize(steps);
+        R.resize(steps);
+        sigma_R.resize(steps);
+        X.resize(steps);
+        Y.resize(steps);
+    }
+};
+
 class SimulationData
 {
 public:
@@ -29,6 +47,8 @@ public:
     };
 
     inline Position parallelLoad(long long run, long long step);
+
+    inline Position parallelLoad(long long run, long long step) const;
 
     std::vector<Position> getStep(long long step) const;
 
@@ -56,6 +76,11 @@ inline SimulationData::Position SimulationData::parallelLoad(long long run, long
     return Position{id[step * runsStored + run], X[step * runsStored + run], Y[step * runsStored + run]};
 }
 
+inline SimulationData::Position SimulationData::parallelLoad(long long run, long long step) const
+{
+    return Position{id[step * runsStored + run], X[step * runsStored + run], Y[step * runsStored + run]};
+}
+
 class MCSimulation
 {
 public:
@@ -69,6 +94,11 @@ public:
     };
 
     MCSimulation(const Graph &graph_, int runs, long long steps, unsigned long seed, long long writeFreq);
+    MCSimulation(const Graph &g, const GraphCoordinates &co, size_t runs, size_t steps, unsigned long long seed) :
+        graph(g.getGraphData()), coordinates(co), totalRuns(runs), totalSteps(steps) {
+            generators[0] = XoshiroCpp::Xoroshiro128PlusPlus(seed);
+    };
+
     ~MCSimulation(){};
 
     void setDataStore(std::unique_ptr<SimulationData> dataPtr);
@@ -76,6 +106,8 @@ public:
     SimulationData * getDataPointer();
 
     void run();
+
+    void runChunked();
 
     Nodes getData();
 
@@ -85,6 +117,10 @@ public:
 
     long long getWritePeriod();
 
+    long long getRunCount() {return totalRuns;};
+
+    SimulationResults getResults() const;
+
 private:
 
     std::unique_ptr<SimulationData> data_store;
@@ -93,14 +129,28 @@ private:
     
     GraphData graph;
 
+    GraphCoordinates coordinates;
+
+    SimulationResults results;
+
     XoshiroCpp::Xoroshiro128PlusPlus generator;
     std::array<XoshiroCpp::Xoroshiro128PlusPlus, 36> generators;
 
-    long long totalSteps; // number of Monte Carlo steps to take
-    long long totalRuns;
+    size_t totalSteps; // number of Monte Carlo steps to take
+    size_t totalRuns;
     long long writePeriod = 10;
 
     void initAtZero();
+
+    void initGenerators(int threadCount);
+
+    void run(const size_t startingStep, const size_t steps, SimulationData &chunkData);
+
+    void calculateRnForChunk(const size_t startingStep, const size_t steps, const SimulationData &chunkData);
+
+    void calculateReturnsForChunk(const size_t startingStep, const size_t steps, const SimulationData &chunkData, std::vector<size_t> &returnTime , long long sI, long long sX, long long sY);
+
+    void calculateReturnTimes(const std::vector<size_t> &returnTracker);
 
     inline void step(int i);
 

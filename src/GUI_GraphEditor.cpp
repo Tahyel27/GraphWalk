@@ -138,10 +138,6 @@ Vector2 GraphEditor::applySkew(Vector2 v)
 
 std::tuple<float, float> GraphEditor::getNodeCoordinates(const GraphCoordinates &data, int node, int i, int j)
 {
-    /*float xc = data.scaleX * data.X[node] - data.scaleY * data.skewY * data.Y[node];
-    float yc = data.scaleY * (data.Y[node] + data.scaleX * data.skewX * data.X[node]);
-    xc = xc + i * data.scaleX + j * data.skewY;
-    yc = yc - j * data.scaleY + i * data.skewX; */
     float xc = data.scaleX * (data.X[node] + i);
     float yc = data.scaleY * (data.Y[node] + j);
     auto transformed = applySkew(Vector2{xc, yc});

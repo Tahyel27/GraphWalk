@@ -49,7 +49,7 @@ std::vector<int> Graph::getEdgesFromNode(int node) const
     auto to_ret = std::vector<int>();
     for (size_t i = 0; i < data.vert_A.size(); i++)
     {
-        if (data.vert_A[i] == node)
+        if (data.vert_A[i] == node) //if the edge starts at node A we write it to the return vector
         {
             to_ret.push_back(data.vert_B[i]);
             to_ret.push_back(data.inc_X[i]);

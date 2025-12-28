@@ -40,9 +40,7 @@ void GUI::loop()
         keyEvents.pop();
     }
 
-    auto mouseEvents = getMouseEvent();
-
-    handleMouseEvents(std::move(mouseEvents));
+    handleMouseEvents(getMouseEvent());
 
     BeginDrawing();
 
@@ -60,10 +58,9 @@ void GUI::runSimulation()
 
     std::random_device seedgen;
     auto cfg = parseConfigFile();
+    cfg.startX = cellx; cfg.startY = celly; cfg.startI = index;
 
     auto simulation = MCSimulation(graph, coords, cfg, seedgen());
-
-    simulation.setStartingPosition(index, cellx, celly);
 
     std::cout << "Starting simulation for " << simulation.getRunCount() << " runs " << simulation.getStepCount() << " steps..." << std::endl;
 

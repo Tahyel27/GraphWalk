@@ -16,7 +16,7 @@ void MCSimulation::initGenerators(int threadCount)
     }
 }
 
-void MCSimulation::run(const size_t startingStep, const size_t steps, SimulationData &chunkData)
+void MCSimulation::runForChunk(const size_t startingStep, const size_t steps, SimulationData &chunkData)
 {
     #pragma omp parallel
     {
@@ -129,6 +129,19 @@ void MCSimulation::calculateReturnTimes(const std::vector<size_t> &returnTracker
 
 void MCSimulation::run()
 {
+    /*
+    Runs the set number of simulations in parallel
+    
+    The simulation is done in the following order
+     1. calculate and store the position of the random walk for each step
+     2. from the stored positions in time calculate the statistics
+    
+    Doing these two steps separately should allow for better compiler optimizations since the loops always contain only one short operation
+    For conserving memory the simulation is done in chunks, where steps 1. and 2. are alternated.
+
+    For generating n independet sequences of random numbers a generator is seeded, and for each thread a the generator is jumped ahead
+    2^64 steps in the random number sequence, yielding independent sequences of random numbers.
+    */
     const size_t chunksize = std::min(totalSteps,max_memory/(sizeof(long long)*3*totalRuns));
     const int thread_count = omp_get_max_threads();
 
@@ -138,27 +151,31 @@ void MCSimulation::run()
 
     results.resize(totalSteps);
     
-    auto data = SimulationData{};
-    data.reserveSpace(totalRuns, chunksize);
+    auto chunkdata = SimulationData{};
+    chunkdata.reserveSpace(totalRuns, chunksize);
 
     auto retTracker = std::vector<size_t>(totalRuns, 0);
+
+    const auto sX = data.x[0]; const auto sY = data.y[0]; const auto sI = data.i[0];
 
     const size_t chunk_count = totalSteps / chunksize;
 
     for (size_t i = 0; i < chunk_count; i++)
     {
-        run(i*chunksize, chunksize, data);
+        runForChunk(i*chunksize, chunksize, chunkdata);
 
-        calculateRnForChunk(i*chunksize, chunksize, data);
+        calculateRnForChunk(i*chunksize, chunksize, chunkdata);
 
-        calculateReturnsForChunk(i*chunksize, chunksize, data, retTracker, 0, 0, 0);
+        calculateReturnsForChunk(i*chunksize, chunksize, chunkdata, retTracker, sI, sX, sY);
     }
     
     if (totalSteps - chunk_count * chunksize > 0)
     {
-        run(chunk_count * chunksize, totalSteps - chunk_count * chunksize, data);
+        runForChunk(chunk_count * chunksize, totalSteps - chunk_count * chunksize, chunkdata);
 
-        calculateRnForChunk(chunk_count * chunksize, totalSteps - chunk_count * chunksize, data);
+        calculateRnForChunk(chunk_count * chunksize, totalSteps - chunk_count * chunksize, chunkdata);
+
+        calculateReturnsForChunk(chunk_count * chunksize, totalSteps - chunk_count * chunksize, chunkdata, retTracker, sI, sX, sY);
     }
 
     calculateReturnTimes(retTracker);

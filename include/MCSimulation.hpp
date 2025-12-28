@@ -15,6 +15,9 @@ struct SimulationConfig
     size_t runs = 10000;
     size_t steps = 1000;
     std::string filename = "";
+    int startX = 0;
+    int startY = 0;
+    int startI = 0;
 };
 
 struct SimulationResults
@@ -88,13 +91,13 @@ inline SimulationData::Position SimulationData::parallelLoad(long long run, long
 class MCSimulation
 {
 public:
-    using data_t = std::vector<long long>;
+    using LLvector_t = std::vector<long long>;
 
     struct Nodes
     {
-        data_t i;
-        data_t x;
-        data_t y;
+        LLvector_t i;
+        LLvector_t x;
+        LLvector_t y;
     };
 
     MCSimulation(const Graph &g, const GraphCoordinates &co, size_t runs, size_t steps, unsigned long long seed) :
@@ -106,6 +109,7 @@ public:
         graph(g.getGraphData()), coordinates(co), totalRuns(config.runs), totalSteps(config.steps), max_memory(config.max_memory) {
             generators[0] = XoshiroCpp::Xoroshiro128PlusPlus(seed);
             data.i.resize(totalRuns); data.x.resize(totalRuns); data.y.resize(totalRuns);
+            setStartingPosition(config.startI, config.startX, config.startY);
     };
 
     ~MCSimulation(){};
@@ -126,7 +130,7 @@ public:
 private:
     size_t max_memory = 4ULL * 1024ULL * 1024ULL * 1024ULL; //4GiB
 
-    Nodes data;
+    Nodes data; //contains three arrays that store the simulation state for each run
     
     const GraphData graph;
 
@@ -136,14 +140,14 @@ private:
 
     std::array<XoshiroCpp::Xoroshiro128PlusPlus, 36> generators;
 
-    size_t totalSteps; // number of Monte Carlo steps to take
+    size_t totalSteps;
     size_t totalRuns;
 
     void initAtZero();
 
     void initGenerators(int threadCount);
 
-    void run(const size_t startingStep, const size_t steps, SimulationData &chunkData);
+    void runForChunk(const size_t startingStep, const size_t steps, SimulationData &chunkData);
 
     void calculateRnForChunk(const size_t startingStep, const size_t steps, const SimulationData &chunkData);
 
@@ -158,11 +162,11 @@ private:
 inline void MCSimulation::step(int run, XoshiroCpp::Xoroshiro128PlusPlus &gen)
 {
     // update for a single run
-    int n_edges = graph.edges_per_node[data.i[run]]; // get the number of edges for our location on the periodic graph
-    int edge_start = graph.edge_start[data.i[run]];  // get the location of the information about our node in the graph data rep.run
+    const int n_edges = graph.edges_per_node[data.i[run]]; // get the number of edges for our location on the periodic graph
+    const int edge_start = graph.edge_start[data.i[run]];  // get the location of the information about our node in the graph data representation
     std::uniform_int_distribution<> dist(0, n_edges - 1);
 
-    int choice = dist(gen); // pick an edge
+    const int choice = dist(gen); // pick an edge
 
     // now update the position based on the graph data, which is at some_data[edge_start + choice]
     data.i[run] = graph.vert_B[edge_start + choice];

@@ -42,9 +42,10 @@ void MCSimulation::calculateRnForChunk(const size_t startingStep, const size_t s
         const size_t idx = i + startingStep;
         float X_cumul = 0.f;
         float Y_cumul = 0.f;
-        float R_cumul = 0.f;
+        double R_cumul = 0.;
+        double R2_cumul = 0.;
 
-        #pragma omp parallel for reduction(+:X_cumul, Y_cumul, R_cumul)
+        #pragma omp parallel for reduction(+:X_cumul, Y_cumul, R_cumul, R2_cumul)
         for (int run = 0; run < totalRuns; run++)
         {
             const auto state = chunkData.parallelLoad(run, i);
@@ -52,37 +53,17 @@ void MCSimulation::calculateRnForChunk(const size_t startingStep, const size_t s
             const float ytmp = coordinates.scaleY * (state.y + coordinates.Y[state.id]);
             const float x = xtmp + coordinates.skewY * ytmp;
             const float y = ytmp + coordinates.skewX * xtmp;
+            const double r = sqrt(double(x) * double(x) + double(y) * double(y));
             X_cumul += x;
             Y_cumul += y;
-            R_cumul += sqrtf(x * x + y * y);
+            R2_cumul += static_cast<double>(x) * static_cast<double>(x) + static_cast<double>(y) * static_cast<double>(y);
+            R_cumul += r;
         }
-
-        const float X_mean = X_cumul / N;
-        const float Y_mean = Y_cumul / N;
-        const float R_mean = R_cumul / N;
-
-        float Xstd_cumul = 0.f;
-        float Ystd_cumul = 0.f;
-        float Rstd_cumul = 0.f;
-
-        #pragma omp parallel for reduction(+:Xstd_cumul, Ystd_cumul, Rstd_cumul)
-        for (size_t run = 0; run < totalRuns; run++)
-        {
-            const auto state = chunkData.parallelLoad(run, i);
-            const float xtmp = coordinates.scaleX * (state.x + coordinates.X[state.id]);
-            const float ytmp = coordinates.scaleY * (state.y + coordinates.Y[state.id]);
-            const float x = xtmp + coordinates.skewY * ytmp;
-            const float y = ytmp + coordinates.skewX * xtmp;
-            Xstd_cumul += (x - X_mean) * (x - X_mean);
-            Ystd_cumul += (y - Y_mean) * (y - Y_mean);
-            const float R = sqrtf(x * x + y * y);
-            Rstd_cumul += (R - R_mean) * (R - R_mean);
-        }
-
-        results.R[idx] = R_mean;
-        results.X[idx] = X_mean;
-        results.Y[idx] = Y_mean;
-        results.sigma_R[idx] = Rstd_cumul / N;
+        
+        results.R[idx] = R_cumul / N;
+        results.X[idx] = X_cumul / N;
+        results.Y[idx] = Y_cumul / N;
+        results.sigma_R[idx] = (R2_cumul / N) - results.R[idx] * results.R[idx];
     }
 }
 

@@ -59,7 +59,7 @@ std::tuple<Graph, GraphCoordinates> loadGraphFromFile(const std::string &fname)
             else
             {
                 sstream >> nodeA >> nodeB >> incX >> incY;
-                graph.addEdge(nodeA, nodeB, incX, incY);
+                graph.addBidirectionalEdge(nodeA, nodeB, incX, incY);
             }
         }
     }

@@ -54,6 +54,7 @@ void runCLI()
     if (!cfg.filename.empty())
     {
         result = loadGraphFromFile(cfg.filename);
+        std::cout << "Running simulation from file: " << cfg.filename << std::endl;
     }
     else
     {

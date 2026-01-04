@@ -1,4 +1,5 @@
 #include "GUI_GraphEditor.hpp"
+#include "Utilities.hpp"
 
 void GraphEditor::drawCellNodes(int x, int y)
 {
@@ -202,15 +203,10 @@ void GraphEditor::handleKeyEvent(KeyEvent event)
         }
         else if (event.key == KEY_C)
         {
+            history.push(std::tuple<Graph, GraphCoordinates>{graph, coords});
             graph = Graph();
             coords = GraphCoordinates();
             markedNode = std::nullopt;
-        }
-        else if (event.key == KEY_H)
-        {
-            auto [g, c] = getHexGrid();
-            graph = g;
-            coords = c;
         }
         else if (event.key == KEY_RIGHT)
         {
@@ -241,7 +237,24 @@ void GraphEditor::handleKeyEvent(KeyEvent event)
                     markedNode = std::nullopt;
                 }
             }
-            
+        }
+        else if (event.key == KEY_H)
+        {
+            history.push(std::tuple<Graph, GraphCoordinates>{graph, coords});
+            const auto [gr, co] = loadGraphFromFile("hexagonal.txt");
+            graph = gr; coords = co;
+        }
+        else if (event.key == KEY_T)
+        {
+            history.push(std::tuple<Graph, GraphCoordinates>{graph, coords});
+            const auto [gr, co] = loadGraphFromFile("triangular.txt");
+            graph = gr; coords = co;
+        }
+        else if (event.key == KEY_Q)
+        {
+            history.push(std::tuple<Graph, GraphCoordinates>{graph, coords});
+            const auto [gr, co] = loadGraphFromFile("sqr.txt");
+            graph = gr; coords = co;
         }
         
     }

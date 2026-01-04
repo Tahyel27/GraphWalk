@@ -48,10 +48,10 @@ void MCSimulation::calculateRnForChunk(const size_t startingStep, const size_t s
         for (int run = 0; run < totalRuns; run++)
         {
             const auto state = chunkData.parallelLoad(run, i);
-            const float xtmp = state.x + coordinates.X[state.id];
-            const float ytmp = state.y + coordinates.Y[state.id];
-            const float x = coordinates.scaleX * ( xtmp + coordinates.skewY * ytmp );
-            const float y = coordinates.scaleY * ( ytmp + coordinates.skewX * xtmp );
+            const float xtmp = coordinates.scaleX * (state.x + coordinates.X[state.id]);
+            const float ytmp = coordinates.scaleY * (state.y + coordinates.Y[state.id]);
+            const float x = xtmp + coordinates.skewY * ytmp;
+            const float y = ytmp + coordinates.skewX * xtmp;
             X_cumul += x;
             Y_cumul += y;
             R_cumul += sqrtf(x * x + y * y);
@@ -69,10 +69,10 @@ void MCSimulation::calculateRnForChunk(const size_t startingStep, const size_t s
         for (size_t run = 0; run < totalRuns; run++)
         {
             const auto state = chunkData.parallelLoad(run, i);
-            const float xtmp = state.x + coordinates.X[state.id];
-            const float ytmp = state.y + coordinates.Y[state.id];
-            const float x = coordinates.scaleX * (xtmp + coordinates.skewY * ytmp);
-            const float y = coordinates.scaleY * (xtmp + coordinates.skewX * xtmp);
+            const float xtmp = coordinates.scaleX * (state.x + coordinates.X[state.id]);
+            const float ytmp = coordinates.scaleY * (state.y + coordinates.Y[state.id]);
+            const float x = xtmp + coordinates.skewY * ytmp;
+            const float y = ytmp + coordinates.skewX * xtmp;
             Xstd_cumul += (x - X_mean) * (x - X_mean);
             Ystd_cumul += (y - Y_mean) * (y - Y_mean);
             const float R = sqrtf(x * x + y * y);

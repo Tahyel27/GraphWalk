@@ -43,14 +43,13 @@ void GraphEditor::drawCellEdges(int x, int y)
 
 void GraphEditor::drawUnitCell()
 {
-    float X = SCALE + OFF_X;
-    float Y = SCALE + OFF_Y;
-
+    const float wX = coords.scaleX * 0.5;
+    const float wY = coords.scaleY * 0.5;
     
-    auto topright = applySkew(Vector2{0.5,0.5});
-    auto topleft = applySkew(Vector2{-0.5,0.5});
-    auto bottomleft = applySkew(Vector2{-0.5,-0.5});
-    auto bottomright = applySkew(Vector2{0.5,-0.5});
+    auto topright = applySkew(Vector2{wX, wY});
+    auto topleft = applySkew(Vector2{-wX, wY});
+    auto bottomleft = applySkew(Vector2{-wX,-wY});
+    auto bottomright = applySkew(Vector2{wX,-wY});
 
     topright = vec2ToScreen(topright);
     topleft = vec2ToScreen(topleft);
@@ -123,15 +122,15 @@ Vector2 GraphEditor::screenToCoords(Vector2 screen)
 {
     auto x = (screen.x - OFF_X) / SCALE;
     auto y = (screen.y - OFF_Y) / SCALE;
-    auto idet = 1 / (1 + coords.skewX * coords.scaleY);
-    auto xc = idet * (x + coords.skewY * y);
-    auto yc = idet * (y - coords.skewX * x);
+    auto idet = 1 / (1 - coords.skewX * coords.skewY);
+    auto xc = idet * (x - coords.skewY * y) / coords.scaleX;
+    auto yc = idet * (y - coords.skewX * x) / coords.scaleY;
     return Vector2{xc, yc};
 }
 
 Vector2 GraphEditor::applySkew(Vector2 v)
 {
-    float x = v.x - v.y * coords.skewY;
+    float x = v.x + v.y * coords.skewY;
     float y = v.y + v.x * coords.skewX;
     return Vector2{x, y};
 }
@@ -173,13 +172,23 @@ std::tuple<int, int, int> GraphEditor::getStartingNode()
 
 void GraphEditor::handleKeyEvent(KeyEvent event)
 {
-    if (event.key == KEY_A)
+    const auto PRESSED = KeyEvent::Type::PRESSED;
+
+    if (event.key == KEY_A && event.type == PRESSED)
     {
-        TESFLAG = true;
+        coords.scaleX -=  0.02;
     }
-    else if(event.key == KEY_B)
+    else if(event.key == KEY_D && event.type == PRESSED)
     {
-        TESFLAG = false;
+        coords.scaleX += 0.02;
+    }
+    else if(event.key == KEY_W && event.type == PRESSED)
+    {
+        coords.scaleY += 0.02;
+    }
+    else if(event.key == KEY_S && event.type == PRESSED)
+    {
+        coords.scaleY -= 0.02;
     }
     if (event.type == KeyEvent::Type::PRESSED)
     {
@@ -298,7 +307,6 @@ GraphEditor::~GraphEditor()
 
 void GraphEditor::draw()
 {
-    //DrawRectangle(-0.5*SCALE + OFF_X, -0.5*SCALE + OFF_Y, SCALE, SCALE, LIGHTGRAY);
     drawUnitCell();
 
     for (int i = -5; i < 6; i++)
